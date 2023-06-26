@@ -290,13 +290,11 @@
             ${card.outerHTML}`
 
         rasterizeHTML.drawHTML(h, null).then(function success(renderResult) {
-            console.log(renderResult)
             img = renderResult.image;
             var canvas = document.createElement('canvas');
             canvas.width = img.naturalWidth;
             canvas.height = img.naturalHeight;
             document.body.appendChild(canvas)
-            console.log(canvas)
             const ctx = canvas.getContext("2d");
             ctx.drawImage(img, 0, 0)
             var title = card.title.toLowerCase().replace(/\s/g, '-')
