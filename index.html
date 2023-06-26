@@ -1,0 +1,343 @@
+<html>
+<head>
+<meta charset="UTF-8">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Della+Respira&family=Lobster+Two:wght@400;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design.css">
+<script src="./rasterizeHTML.allinone.js"></script>
+</head>
+
+<body>
+
+<h2>My Game</h2>
+
+<p>
+    My Game is a game for 2 to 4 players. There are <span id="nbCards"></span> cards in 
+    the game with <span id="nbDesign"></span> unique designs.
+</p>
+
+<p>Distribution of cards: <span id="distribution"></span></p>
+
+<div style="display: flex;">
+    <div class="booklet" id="face" title="booklet-face">
+        <div class="innerBooklet">     
+            <div>
+            <h3 style="margin-top:0">
+                Set up <span style="float: right; font-size: 10px; margin-top: -4px; margin-right: -2px;">My Game Rules 1/2</span>
+            </h3>
+            <p>Contains 72 cards and this booklet. Suited for 2 to 4 players.</p>
+         
+             <ol>
+                 <li>Gather about 20 Treasure tokens into a bank. We recommend using beans. Give a Treasure to each player.</li>
+                 <li>
+                     Each player receives a deck of 2 Fist Fight and 2 Celebrate.
+                     Remove all remaining Fist Fight and Celebrate from the game.
+                 </li>
+                 <li>
+                     Shuffle and take 11 cards per player to form the supply deck.
+                     The rest are the refresh deck.
+                     Put 6 cards from the refresh deck face up on the table as the supply. 
+                     Always maintain 6 face-up cards and replace them from the <b>supply</b> deck.
+                 </li>
+             </ol>
+
+             <h3>Unfolding of the game</h3>
+
+             <p>
+                 A random player start, then each player in turn:
+             </p>
+         
+             <ol>
+                 <li>Apply effects that happen at the beginning of turn <img class="rule-icon" src="icons/bookmark-yellow.svg" />.</li>
+                 <li>Discard your hand and draw 3 cards.</li>
+                 <li>You have 2 of any actions during your turn which are:
+                     <ol>
+                         <li>Playing a card: Apply its effects <b>then</b> put it in your discard.</li>
+                         <li>Buying a card from the supply: It goes in your discard.</li>
+                     </ol>
+                  </li>
+                 <li>When your deck is empty immediately shuffle your discard into a new deck. This takes precedence over
+                    <b>any</b> other effect.
+                 </li>
+             </ol>
+            </div>
+
+             <div style="margin-bottom: 20px; position: relative;">
+                <img src="board.png" width="102%" style="margin-left: -1%" />
+                <p id="illustration">
+                    1. Supply deck &nbsp;2. Refresh deck<br>
+                    3. Supply &nbsp;
+                    4. Hand + Treasures<br>
+                    5. Your deck &nbsp;
+                    6. Your discard
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="booklet" id="back"  title="booklet-back">
+        <div class="innerBooklet">
+            <div>
+            <h3 style="margin-top:0">
+                General rules <span style="float: right; font-size: 10px; margin-top: -4px; margin-right: -2px;">My Game Rules 2/2</span>
+            </h3>
+        
+            <ol>
+                <li>Treasures are the money that allow you to buy cards from the supply. Card cost is the chest icon at the bottom right <img class="rule-icon" src="icons/chest.svg" />.</li>
+                <li><b>+1 Card:</b> Draw a card from your deck immediately.</li>
+                <li><b>+1 Action:</b> One extra action of any kind during your turn.</li>
+                <li><b>+1 Treasure:</b> Take a Treasure from the bank immediately.</li>
+                <li><b>+1 Buy:</b> You may buy a card without using an action this turn.</li>
+                <li>+1 Supply refresh: You may put one supply at the bottom of the refresh deck this turn. 
+                    Replace it with a <b>refresh</b> deck card.</li>
+                <li>+1 Discard: Discard a card immediately.</li>
+                <li>Effects on cards have to be applied <b>in order</b>.</li>
+                <li>Cards have 3 possible types: Attack, Structure, Adventure.</li>
+                <li>Text that says "if you have" checks cards currently in your hand.</li>
+                <li>Cards being played are neither in your hand nor your discard.</li>
+                <li>You can only Discard cards in your hand.</li>
+                <li>Your discard is face up and can be inspected by anybody.</li>
+                <li>You cannot own less than 4 cards.</li>
+                <!-- <li>The flag <img class="rule-icon" src="icons/flag.svg" /> indicates an effect at the beginning of turn.</li> -->
+                <li>When a deck/discard/hand is too small for an effect, you can still apply the effect for any amount that is not 0.</li>
+            </ol>
+        
+            <h3>End of the game</h3>
+        
+            <p>The game ends immediately when the supply deck is empty.
+               Count the number of hooks in each deck <img class="rule-icon" src="icons/hook.svg" />. The player with the most hooks wins the game. 
+               If there is equality, the player with the most Treasures wins, then the player that ended the game.
+            </p>
+            </div>
+
+            <div>
+                Information and update: https://github.com/batiste/card-game-template<br>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button onclick="downloadBookletFace()">Download booklet face</button>
+<button onclick="downloadBookletBack()">Download booklet back</button>
+
+
+<div id="cards"></div>
+
+</body>
+
+<script>
+    var cards = [
+
+    {
+            'title': 'Fist Fight',
+            'text': '+1 Treasure.',
+            'img': 'cards/fist-fight.png',
+            'type': 'attack',
+            'subtype': 'Attack',
+            'victory': '1',
+            'cost': '1',
+            'amount': 3
+        },
+
+        {
+            'title': 'Celebrate',
+            'text': '+1 Card.<br>+1 Supply refresh.',
+            'img': 'cards/celebrate.png',
+            'type': 'adventure',
+            'subtype': 'Adventure',
+            'victory': '1',
+            'cost': '1',
+            'amount': 3
+        },
+
+        {
+            'title': 'Tavern',
+            'text': '+1 Card if you have an Adventure.<br>+1 Treasure if you have an Attack.<br>+1 Action if you have a Structure.',
+            'img': 'cards/tavern.png',
+            'type': 'adventure',
+            'subtype': 'Adventure',
+            'victory': '1',
+            'cost': '1',
+            'amount': 3,
+        },
+
+        {
+            'title': 'Quick Shot',
+            'text': '+1 Treasure.<br>+1 Action if you have an Attack.',
+            'img': 'cards/dual-pistol.png',
+            'type': 'attack',
+            'subtype': 'Attack',
+            'cost': 1,
+            'victory': 1,
+            'amount': 3,
+        },
+
+    ]
+
+    all = []
+    var j = 0;
+    var amount = 0;
+    var distribution = {'attack': 0, 'structure': 0, 'adventure': 0, 1: 0, 2: 0, 3: 0, 4: 0, nb_cards_necessary_total:(15 * 4 + 6 + 2)}
+
+    cards.forEach((c) => {
+        var extra = ""
+        c['id'] = j;
+        amount += c['amount'];
+        if(j>1) {
+            distribution[c['type']] += c['amount']
+            distribution[c['cost']] += c['amount']
+        }
+
+        if(c['victory'] != undefined) {
+            extra += `<span class="hook">${c['victory']}</span>
+                <img class="hook-icon" src="icons/hook.svg" />`
+        }
+
+        if(c['cost'] != undefined) {
+            extra += `<span class="cost">${c['cost']}</span>
+                <img class="cost-icon" src="icons/chest.svg" />`
+        }
+
+        if(c['subtype'] != undefined) {
+            extra += `<span class="subtype">${c['subtype']}</span>`
+        }
+
+        if(c['discard'] != undefined) {
+            extra += `<span class="discard"><img src="icons/bookmark-yellow.svg" /></span>`
+        }
+
+        if(c['type'] == "attack") {
+            extra += `<img class="attack-icon-1" src="icons/attack.svg" /><img class="attack-icon-2" src="icons/attack.svg" />`
+        }
+
+        if(c['type'] == "adventure") {
+            extra += `<img class="tentacle-icon-1" src="icons/tentacle.svg" /><img class="tentacle-icon-2" src="icons/tentacle.svg" />`
+        }
+
+        if(c['type'] == "structure") {
+            extra += `<img class="structure-icon-1" src="icons/structure.svg" /><img class="structure-icon-2" src="icons/structure.svg" />`
+        }
+
+        var template = `<div class="card" id="card-${j}" title="${c['title']}">
+            <div class="inner">
+                <div class="front type-${c['type']}"> 
+                    <div class="frame"><div></div></div>
+                    <img src="${c['img']}" class="bg" />
+                    
+                    <span class="title">${c['title']}</span>
+                    <span class="text">${c['text']}</span>
+                    ${extra}
+
+                    <div class="mpc">
+                        <img src="mpc.png" />
+                    </div>
+                    <div class="mask"></div>
+                </div>
+                <div class="back">
+                    <img src="back.png" />
+                    <div class="mpc">
+                        <img src="mpc.png" />
+                    </div>
+                </div>
+            </div>
+            <button onclick="downloadCard(this)">Download #${j+1}, copies: ${c['amount']}</button>
+        </div>
+        `
+        all.push(template)
+        j++;
+    })
+
+    document.getElementById('nbCards').innerHTML = amount;
+    document.getElementById('nbDesign').innerHTML = cards.length;
+    
+    document.getElementById('distribution').innerHTML = JSON.stringify(distribution, undefined, '\n');
+
+    document.getElementById('cards').innerHTML = all.join('')
+
+    function download(url, title) {
+        var a = document.createElement('a')
+        a.href=url
+        a.download=title+".png"
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+    }
+
+    function downloadCard(e) {
+        createCardImage(e.parentNode)
+    }
+
+    function downloadBookletFace(e) {
+        createBookletImage(document.getElementById('face'))
+    }
+
+    function downloadBookletBack(e) {
+        createBookletImage(document.getElementById('back'))
+    }
+
+    function createCardImage(card, cb) {
+        
+        card.classList.add('preparePrint')
+
+        var h = `
+            <link href="https://fonts.googleapis.com/css2?family=Della+Respira&family=Lobster+Two:wght@400;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+            <link rel="stylesheet" href="design.css">
+            <style>
+                .card {zoom: 6.5; float: none; position: initial; margin: 0;}
+            </style>
+            
+            ${card.outerHTML}`
+
+        rasterizeHTML.drawHTML(h, null).then(function success(renderResult) {
+            console.log(renderResult)
+            img = renderResult.image;
+            var canvas = document.createElement('canvas');
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
+            document.body.appendChild(canvas)
+            console.log(canvas)
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0)
+            var title = card.title.toLowerCase().replace(/\s/g, '-')
+            download(canvas.toDataURL(), title);
+            card.classList.remove('preparePrint')
+            canvas.parentNode.removeChild(canvas)
+        })
+
+    }
+
+    function createBookletImage(booklet, cb) {
+        
+        booklet.classList.add('preparePrint')
+
+        var h = `
+            <link href="https://fonts.googleapis.com/css2?family=Della+Respira&family=Lobster+Two:wght@400;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+            <link rel="stylesheet" href="design.css">
+            <style>
+                .booklet {zoom: 6.5; float: none; position: initial; margin: 0;}
+            </style>
+            
+            ${booklet.outerHTML}`
+
+        rasterizeHTML.drawHTML(h, null).then(function success(renderResult) {
+            console.log(renderResult)
+            img = renderResult.image;
+            var canvas = document.createElement('canvas');
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
+            document.body.appendChild(canvas)
+            console.log(canvas)
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0)
+            var title = booklet.title.toLowerCase().replace(/\s/g, '-')
+            download(canvas.toDataURL(), title);
+            booklet.classList.remove('preparePrint')
+            canvas.parentNode.removeChild(canvas)
+        })
+
+    }
+
+</script>
+
+</html>

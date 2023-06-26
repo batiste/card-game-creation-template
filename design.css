@@ -1,0 +1,399 @@
+html {
+    background-color: 2a2a2a;
+    -webkit-print-color-adjust: exact;
+    -webkit-filter: opacity(1);
+    color: #fff;
+    text-decoration: none;
+}
+
+a, a:visited {
+    color: #fff;
+}
+
+.card {
+    position: relative;
+    background-color: transparent;
+    width: 69.088mm;
+    height: 93.98mm;
+    float: left;
+    margin: 16px 10px;
+    perspective: 1000px;
+}
+
+/* .card * {
+    outline: #cc1f1f 1px dashed;
+} */
+
+.booklet {
+    /* value with bleeding */
+    height: 133.01mm;
+    width: 95mm;
+    background: #140e07;
+    font-family: "Open Sans", Arial, Helvetica, sans-serif;
+    font-size:10px;
+    color: #000000;
+    text-align: left;
+    text-shadow: 0.5px 0.5px 0.3px rgb(255, 255, 255);
+    margin: 10px;
+    zoom: 1;
+    display: flex;
+    background-image: url('booklet.png');
+    background-size: 100% 100%;
+}
+
+.innerBooklet {
+    padding: 1mm;
+    border: 1px dotted red;
+    margin: calc(3mm - 1px);
+    margin: 5mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.booklet ol, .booklet ul {
+    margin: 0;
+    padding: 0;
+}
+
+.booklet ol ol {
+    margin-top: 2px;
+    margin-bottom: 3px;
+}   
+
+.booklet li {
+    margin-left: 15px;
+    padding-top: 2px;
+}
+
+.booklet h3 {
+    font-family: 'Lobster Two', cursive;
+    font-size: 14px;
+    margin-bottom: 5px;
+    margin-top: 10px;
+}
+
+.booklet p {
+    margin-top: 0em;
+    margin-bottom: 0.6em;
+}
+
+.mask {
+    border: 2mm solid black;
+    border-radius: 3mm;
+    position: absolute;
+    top: 3.05mm;
+    left: 3mm;
+    bottom: 3mm;
+    right: 3mm;
+}
+
+.inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    background-color: #000;
+}
+
+.card:hover .inner {
+    transform: rotateY(180deg);
+}
+
+.card .bg {
+    /* 63 88 is poker size */
+    width: 59mm;
+    height: 84mm;
+    margin-top: 5mm;
+    /* border-radius: 5px; */
+}
+
+.card .mpc {
+    position: absolute;
+    top:0;
+    left:0;
+    width: 69.088mm;
+    height: 93.98mm;
+    /* border-radius: 5px; */
+}
+
+.card .mpc img {
+    width: 69.088mm;
+    height: 93.98mm;
+}
+
+.card .fg {
+    width: 63mm;
+    height: 88mm;
+    position: absolute;
+    top:0;
+    left:0;
+    opacity: 0.01;
+}
+
+.card .title {
+    font-family: 'Lobster Two', cursive;
+    letter-spacing: 0.1px;
+    font-size: 16px;
+    position: absolute;
+    right:0;
+    top:56mm;
+    left:0;
+    color: #fff9d8;
+    text-align: center;
+    text-shadow: 1.3px 1.4px black;
+}
+
+.card .text {
+    position: absolute;
+    font-family: "Open Sans", Arial, Helvetica, sans-serif;
+    font-size:9.5px;
+    right:9mm;
+    top:56.5mm;
+    left:9mm;
+    bottom:10.5mm;
+    color: #fffdf2;
+    text-align: center;
+    text-shadow: 0.5px 0.5px black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.45;
+}
+
+.rules {
+    font-family: 'Della Respira', serif;
+    font-size:13px;
+    color: #ffffff;
+    text-align: left;
+    line-height: 1.45;
+    max-width: 50%;
+    float:left
+}
+
+.card .rules ol {
+    margin: 0;
+    padding: 0;
+    padding-left: 1em;
+}
+
+.card .rules p {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 8px;
+}
+
+.card .subtype {
+    font-family: "Open Sans", Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    position: absolute;
+    right:26mm;
+    top:83.2mm;
+    left:26mm;
+    color: #fff9d8;
+    text-align: center;
+    text-shadow: 1px 1px 1px black;
+    background-color: rgba(17, 15, 13, 0.91);
+    border: 1px solid rgba(231, 185, 48, 0.9);
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.70);
+    padding-bottom: 0.4mm;
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+}
+
+.card .discard {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.458);
+    top:5mm;
+    left:5mm;
+    padding: 1.1mm;
+    padding-bottom: 0.4mm;
+    padding-right: 0.8mm;
+    width: 15px;
+    height: 15px;
+    border-radius: 0 0 3px 0;
+    text-align: center;
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+}
+
+.card .frame {
+    position: absolute;
+    right:6.5mm;
+    top:54mm;
+    left:6.5mm;
+    bottom:6.7mm;
+    border-radius: 7px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 0.8px solid rgba(231, 185, 48, 0.608);
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+
+.card .frame div {
+    position: absolute;
+    right:0.65mm;
+    top:0.65mm;
+    left:0.65mm;
+    bottom:0.65mm;
+    border-radius: 5px;
+    border: 1px solid rgba(231, 185, 48, 0.9);
+    background-color: rgba(14, 14, 13, 0.58);
+}
+
+.card .text span {
+    font-family: 'Lobster Two', cursive;
+    display: contents;
+}
+
+.cost {
+    font-family: 'Lobster Two', cursive;
+    color: #ffffff;
+    font-size: 15px;
+    position: absolute;
+    left: 57.6mm;
+    top: 79.6mm;
+    text-shadow: 1px 1px black;
+}
+
+.cost-icon {
+    position:absolute;
+    left: 50mm;
+    top: 79.4mm;
+}
+
+.hook {
+    font-family: 'Lobster Two', cursive;
+    color: #ffffff;
+    font-size: 15px;
+    position: absolute;
+    left: 16mm;
+    top: 79.6mm;
+    text-shadow: 1px 1px black;
+}
+
+.hook-icon {
+    position:absolute;
+    left: 9.6mm;
+    top: 79.1mm;
+}
+
+.attack-icon-1 {
+    position:absolute;
+    left: 8.5mm;
+    top: 51mm;
+}
+.attack-icon-2 {
+    position:absolute;
+    right: 8.5mm;
+    top: 51mm;
+}
+
+.structure-icon-1 {
+    position:absolute;
+    left: 8mm;
+    top: 49mm;
+}
+.structure-icon-2 {
+    position:absolute;
+    right: 8mm;
+    top: 49mm;
+}
+
+.tentacle-icon-1 {
+    position:absolute;
+    left: 8mm;
+    top: 48.4mm;
+    transform: scaleX(-1);
+}
+.tentacle-icon-2 {
+    position:absolute;
+    right: 8mm;
+    top: 48.4mm;
+}
+
+/* Position the front and back side */
+.front, .back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden; /* Safari */
+    backface-visibility: hidden;
+}
+
+/* Style the back side */
+.back {
+    /* display: none; */
+    transform: rotateY(180deg);
+}
+.back img {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+}
+.break {
+    width:100%;
+    height: 1px;
+    page-break-after: always;
+}
+
+@media print {
+    @page {
+        size: 210mm 297mm;
+    }
+    @page {
+        size: 420mm 594mm;
+    }
+    body {
+        zoom: 2;
+    }
+    .back img {
+        display: none;
+    }
+}
+
+.preparePrint button {
+    display: none;
+}
+.preparePrint .mpc {
+    display: none;
+}
+.preparePrint.card .bg {
+    border-radius: 0;
+}
+.preparePrint .back {
+    display: none;
+}
+
+.preparePrint .innerBooklet {
+    border: 0;
+}
+
+#illustration {
+    position:absolute;
+    left: 50%;
+    top: 75%
+}
+
+#illustration li {
+    float: left;
+    margin-right: 5px;
+}
+
+.mpc {
+    /* display: none; */
+}
+
+.rule-icon {
+    display: inline-block;
+    height: 13px;
+    background: #000;
+    border-radius: 2px;
+    margin-top: -1px;
+    margin-bottom: -3px;
+    padding: 0.5px 1px;
+}
