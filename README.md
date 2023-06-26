@@ -1,7 +1,7 @@
 
 # Card Game Creation Template
 
-A template for creating game extracted from the game (DeckHand)[https://bit.ly/dk-h]
+A template for creating game extracted from the game [DeckHand](https://bit.ly/dk-h)
 
 For the code to work properly you need to run this project on a server. For example:
 
