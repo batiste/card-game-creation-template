@@ -11,6 +11,10 @@ python -m http.server
 
 Then visit http://localhost:8000/
 
+## Running demo
+
+https://batiste.github.io/card-game-creation-template/
+
 ## Resources
 
 Icons from https://game-icons.net/
