@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Della+Respira&family=Lobster+Two:wght@400;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="design.css">
 <script src="./rasterizeHTML.allinone.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 
 <body>
@@ -18,7 +19,6 @@
     the game with <span id="nbDesign"></span> unique designs.
 </p>
 
-<p>Distribution of cards: <span id="distribution"></span></p>
 
 <div style="display: flex;">
     <div class="booklet" id="face" title="booklet-face">
@@ -118,8 +118,14 @@
     </div>
 </div>
 
-<button onclick="downloadBookletFace()">Download booklet face</button>
-<button onclick="downloadBookletBack()">Download booklet back</button>
+<p>
+    <button onclick="downloadBookletFace()">Download booklet face</button>
+    <button onclick="downloadBookletBack()">Download booklet back</button>
+</p>
+
+<p>
+    <button id="generatePrintSheet">Create Print Sheet PDF from selection</button>
+</p>
 
 
 <div id="cards"></div>
@@ -178,16 +184,11 @@
     all = []
     var j = 0;
     var amount = 0;
-    var distribution = {'attack': 0, 'structure': 0, 'adventure': 0, 1: 0, 2: 0, 3: 0, 4: 0, nb_cards_necessary_total:(15 * 4 + 6 + 2)}
 
     cards.forEach((c) => {
         var extra = ""
         c['id'] = j;
         amount += c['amount'];
-        if(j>1) {
-            distribution[c['type']] += c['amount']
-            distribution[c['cost']] += c['amount']
-        }
 
         if(c['victory'] != undefined) {
             extra += `<span class="hook">${c['victory']}</span>
@@ -219,29 +220,35 @@
             extra += `<img class="structure-icon-1" src="icons/structure.svg" /><img class="structure-icon-2" src="icons/structure.svg" />`
         }
 
-        var template = `<div class="card" id="card-${j}" title="${c['title']}">
-            <div class="inner">
-                <div class="front type-${c['type']}"> 
-                    <div class="frame"><div></div></div>
-                    <img src="${c['img']}" class="bg" />
-                    
-                    <span class="title">${c['title']}</span>
-                    <span class="text">${c['text']}</span>
-                    ${extra}
+        var template = `
+        <div class="card-container">
+            <div class="card" id="card-${j}" title="${c['title']}">
+                <div class="inner">
+                    <div class="front type-${c['type']}"> 
+                        <div class="frame"><div></div></div>
+                        <img src="${c['img']}" class="bg" />
+                        
+                        <span class="title">${c['title']}</span>
+                        <span class="text">
+                            <span class="innerText">${c['text']}</span>
+                        </span>
+                        ${extra}
 
-                    <div class="mpc">
-                        <img src="mpc.png" />
+                        <div class="mpc">
+                            <img src="mpc.png" />
+                        </div>
+                        <div class="mask"></div>
                     </div>
-                    <div class="mask"></div>
-                </div>
-                <div class="back">
-                    <img src="back.png" />
-                    <div class="mpc">
-                        <img src="mpc.png" />
+                    <div class="back">
+                        <img src="back.png" />
+                        <div class="mpc">
+                            <img src="mpc.png" />
+                        </div>
                     </div>
                 </div>
             </div>
-            <button onclick="downloadCard(this)">Download #${j+1}, copies: ${c['amount']}</button>
+            <button onclick="downloadCard(this)">Download #${j+1}, copies: ${c['amount']}</button><br>
+            <label><input type="checkbox" onclick="changePrintSelection(this)" data-card-id="${c['id']}"  ${c['pdf'] ? 'checked="true' : ''}">Part of print sheet</label>
         </div>
         `
         all.push(template)
@@ -249,10 +256,7 @@
     })
 
     document.getElementById('nbCards').innerHTML = amount;
-    document.getElementById('nbDesign').innerHTML = cards.length;
-    
-    document.getElementById('distribution').innerHTML = JSON.stringify(distribution, undefined, '\n');
-
+    document.getElementById('nbDesign').innerHTML = cards.length;    
     document.getElementById('cards').innerHTML = all.join('')
 
     function download(url, title) {
@@ -263,9 +267,25 @@
         a.click()
         a.remove()
     }
+    function download(url, title) {
+        var a = document.createElement('a')
+        a.href=url
+        a.download=title+".png"
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+    }
+
+    function changePrintSelection(e) {
+        cards.forEach((card) => {
+            if(card.id == parseInt(e.dataset.cardId, 10)) {
+                card['pdf'] = e.checked
+            }
+        })
+    }
 
     function downloadCard(e) {
-        createCardImage(e.parentNode)
+        createCardImage(e.parentNode.querySelector('.card'))
     }
 
     function downloadBookletFace(e) {
@@ -276,7 +296,7 @@
         createBookletImage(document.getElementById('back'))
     }
 
-    function createCardImage(card, cb) {
+    function createCardImage(card) {
         
         card.classList.add('preparePrint')
 
@@ -284,7 +304,8 @@
             <link href="https://fonts.googleapis.com/css2?family=Della+Respira&family=Lobster+Two:wght@400;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
             <link rel="stylesheet" href="design.css">
             <style>
-                .card {zoom: 6.5; float: none; position: initial; margin: 0;}
+                html, body {margin:0; padding:0}
+                .card {zoom: 4; float: none; position: initial; margin: 0;}
             </style>
             
             ${card.outerHTML}`
@@ -313,19 +334,18 @@
             <link href="https://fonts.googleapis.com/css2?family=Della+Respira&family=Lobster+Two:wght@400;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
             <link rel="stylesheet" href="design.css">
             <style>
+                html, body {margin:0; padding:0}
                 .booklet {zoom: 6.5; float: none; position: initial; margin: 0;}
             </style>
             
             ${booklet.outerHTML}`
 
         rasterizeHTML.drawHTML(h, null).then(function success(renderResult) {
-            console.log(renderResult)
             img = renderResult.image;
             var canvas = document.createElement('canvas');
             canvas.width = img.naturalWidth;
             canvas.height = img.naturalHeight;
-            document.body.appendChild(canvas)
-            console.log(canvas)
+            document.body.appendChild(canvas);
             const ctx = canvas.getContext("2d");
             ctx.drawImage(img, 0, 0)
             var title = booklet.title.toLowerCase().replace(/\s/g, '-')
@@ -334,6 +354,102 @@
             canvas.parentNode.removeChild(canvas)
         })
 
+    }
+
+    function createImage(card, cb) {
+
+        card.classList.add('preparePrint')
+
+        var h = `
+            <link href="https://fonts.googleapis.com/css2?family=Della+Respira&family=Lobster+Two:wght@400;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+            <link rel="stylesheet" href="design.css">
+            <style>
+                html, body {margin:0; padding:0}
+                .card {zoom: 4; float: none; position: initial; margin: 0;}
+            </style>
+            
+            ${card.outerHTML}`
+
+        rasterizeHTML.drawHTML(h, null).then(function success(renderResult) {
+            cb(renderResult.image);
+            card.classList.remove('preparePrint')
+        })
+    }
+
+    var toRender = 0;
+
+    function bindImage(element, card, i) {
+        setTimeout(() => {
+            createImage(element, (img) => {
+                var canvas = document.createElement('canvas');
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0)
+                card['canvas'] = canvas
+                toRender = toRender - 1;
+            })
+        }, i * 50)
+    }
+
+    document.getElementById('generatePrintSheet').onclick = generatePrintSheet
+
+    function generatePrintSheet(e) {
+        e.target.disable = true;
+        e.target.innerHTML = 'Please wait'
+        var jsPDF = window.jspdf.jsPDF;
+        // A4
+        var doc = new jsPDF({
+            unit: "mm",
+            format: [297, 210],
+        });
+
+
+        for (i=0; i<cards.length; i++) {
+            var card = cards[i];
+            if (card.pdf) {
+                toRender = toRender + 1;
+                var element = document.getElementById('card-'+card['id'])
+                bindImage(element, card, i)
+            }
+        }
+
+        e.target.innerHTML = 'Rendering...'
+
+        var inter = setInterval(() => {
+
+            if (toRender > 0) {
+                e.target.innerHTML = `Starting PDF rendering (${toRender}).`
+                return
+            }
+            clearInterval(inter);
+
+            var pageCounter = 0;
+            for (i=0; i<cards.length; i++) {
+                var card = cards[i];
+                if (!card.pdf) {
+                    continue
+                }
+                e.target.innerHTML = 'Rendering page ' + card['title'];
+                for (j=0; j<card.amount; j++) {
+                    if (pageCounter > 8) {
+                        doc.addPage()
+                        pageCounter = 0;
+                    }
+
+                    var y = (297 / 3.0) * Math.floor(pageCounter / 3.0)
+                    var x = (210 / 3.0) * (pageCounter % 3);
+                    doc.addImage(card['canvas'], "PNG", x, y, 69, 94, card['title'], "FAST", 0)
+                    pageCounter += 1;
+                }
+            }
+
+            doc.save("print.pdf");
+            e.target.innerHTML = 'Done!'
+            setTimeout(() => {
+                e.target.innerHTML = 'Done!'
+            })
+        }, 1000)
     }
 
 </script>
